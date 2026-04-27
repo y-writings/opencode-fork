@@ -92,7 +92,7 @@ export const SqliteSessionHistoryPlugin: Plugin = async (input) => {
     VALUES (?, ?, ?, ?, ?, ?, ?, ?)`
   )
   const insertAssistant = db.prepare(
-    `INSERT OR IGNORE INTO assistant_results (
+    `INSERT INTO assistant_results (
       session_id,
       project_id,
       project_directory,
@@ -105,7 +105,18 @@ export const SqliteSessionHistoryPlugin: Plugin = async (input) => {
       completed_at_ms,
       completed_at_iso
     )
-    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+    ON CONFLICT(assistant_message_id) DO UPDATE SET
+      session_id = excluded.session_id,
+      project_id = excluded.project_id,
+      project_directory = excluded.project_directory,
+      parent_message_id = excluded.parent_message_id,
+      assistant_agent = excluded.assistant_agent,
+      agent_kind = excluded.agent_kind,
+      result_text = excluded.result_text,
+      created_at_ms = excluded.created_at_ms,
+      completed_at_ms = excluded.completed_at_ms,
+      completed_at_iso = excluded.completed_at_iso`
   )
 
   const userByMessageID = new Map<string, UserMessage>()

@@ -60,7 +60,7 @@
 3. `event: message.part.updated` 後
    - streaming 中の `text` part を message 単位で蓄積。
    - 既に completed 済み assistant なら保存処理を再試行。
-   - これにより、最終テキストが揃った時点で保存される。
+   - `assistant_message_id` の競合時は UPSERT（UPDATE）するため、先に保存された部分テキストが最終テキストで上書きされる。
 
 4. `event: session.idle` 後
    - 当該 `session_id` の assistant メッセージを最終 flush。
