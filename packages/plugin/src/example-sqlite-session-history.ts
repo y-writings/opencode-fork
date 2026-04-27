@@ -1,4 +1,5 @@
 import { mkdir } from "node:fs/promises"
+import { homedir } from "node:os"
 import path from "node:path"
 import { Database } from "bun:sqlite"
 
@@ -45,13 +46,15 @@ function textFromParts(parts: Map<string, Part>) {
 }
 
 export const SqliteSessionHistoryPlugin: Plugin = async (input) => {
-  const dbPath = path.join(input.directory, ".opencode", "plugin", "prompt-history-poc.sqlite")
+  const dbPath = path.join(homedir(), ".opencode", "prompt-history-poc.sqlite")
   await mkdir(path.dirname(dbPath), { recursive: true })
   const db = new Database(dbPath, { create: true })
   db.exec(`
     CREATE TABLE IF NOT EXISTS prompt_events (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
       session_id TEXT NOT NULL,
+      project_id TEXT NOT NULL,
+      project_directory TEXT NOT NULL,
       user_message_id TEXT NOT NULL,
       user_agent TEXT NOT NULL,
       prompt_text TEXT NOT NULL,
@@ -62,6 +65,8 @@ export const SqliteSessionHistoryPlugin: Plugin = async (input) => {
     CREATE TABLE IF NOT EXISTS assistant_results (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
       session_id TEXT NOT NULL,
+      project_id TEXT NOT NULL,
+      project_directory TEXT NOT NULL,
       assistant_message_id TEXT NOT NULL UNIQUE,
       parent_message_id TEXT NOT NULL,
       assistant_agent TEXT NOT NULL,
@@ -74,12 +79,23 @@ export const SqliteSessionHistoryPlugin: Plugin = async (input) => {
   `)
 
   const insertPrompt = db.prepare(
-    `INSERT INTO prompt_events (session_id, user_message_id, user_agent, prompt_text, created_at_ms, created_at_iso)
-     VALUES (?, ?, ?, ?, ?, ?)`
+    `INSERT INTO prompt_events (
+      session_id,
+      project_id,
+      project_directory,
+      user_message_id,
+      user_agent,
+      prompt_text,
+      created_at_ms,
+      created_at_iso
+    )
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?)`
   )
   const insertAssistant = db.prepare(
     `INSERT OR IGNORE INTO assistant_results (
       session_id,
+      project_id,
+      project_directory,
       assistant_message_id,
       parent_message_id,
       assistant_agent,
@@ -89,7 +105,7 @@ export const SqliteSessionHistoryPlugin: Plugin = async (input) => {
       completed_at_ms,
       completed_at_iso
     )
-    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`
   )
 
   const userByMessageID = new Map<string, UserMessage>()
@@ -101,6 +117,8 @@ export const SqliteSessionHistoryPlugin: Plugin = async (input) => {
     const user = userByMessageID.get(assistant.parentID)
     insertAssistant.run(
       assistant.sessionID,
+      input.project.id,
+      input.directory,
       assistant.id,
       assistant.parentID,
       assistant.agent,
@@ -117,6 +135,8 @@ export const SqliteSessionHistoryPlugin: Plugin = async (input) => {
       userByMessageID.set(output.message.id, output.message)
       insertPrompt.run(
         output.message.sessionID,
+        input.project.id,
+        input.directory,
         output.message.id,
         output.message.agent,
         output.parts

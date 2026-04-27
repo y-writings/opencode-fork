@@ -9,6 +9,7 @@
   - 親エージェントの最終出力
   - サブエージェントの最終出力
 - 同一セッション判別のため `session_id` を保存する
+- どのプロジェクトの会話か判別するため `project_id` と `project_directory` を保存する
 - 時系列追跡のためミリ秒時刻と ISO 時刻を保存する
 
 ## 実装ファイル
@@ -17,13 +18,15 @@
 
 ## 保存先
 
-- SQLite ファイル: `<project directory>/.opencode/plugin/prompt-history-poc.sqlite`
+- SQLite ファイル: `~/.opencode/prompt-history-poc.sqlite`（グローバル）
 
 ## テーブル
 
 ### `prompt_events`
 
 - `session_id`
+- `project_id`
+- `project_directory`
 - `user_message_id`
 - `user_agent`
 - `prompt_text`
@@ -33,6 +36,8 @@
 ### `assistant_results`
 
 - `session_id`
+- `project_id`
+- `project_directory`
 - `assistant_message_id` (UNIQUE)
 - `parent_message_id`
 - `assistant_agent`
