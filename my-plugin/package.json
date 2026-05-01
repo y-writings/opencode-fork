@@ -1,0 +1,23 @@
+{
+  "name": "opencode-plugin-copy-and-open-editor",
+  "version": "0.1.0",
+  "description": "OpenCode TUI plugin that copies the last assistant message and opens editor in one command",
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "files": [
+    "dist",
+    "src",
+    "README.md"
+  ],
+  "scripts": {
+    "build": "bun build ./src/index.ts --outdir ./dist --target bun",
+    "typecheck": "bunx tsc --noEmit"
+  },
+  "peerDependencies": {
+    "@opencode-ai/plugin": "*"
+  },
+  "devDependencies": {
+    "typescript": "^5.9.3"
+  }
+}
