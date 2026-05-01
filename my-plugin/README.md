@@ -1,21 +1,41 @@
-# opencode-plugin-copy-and-open-editor
+# opencode-workflow-plugin
 
-OpenCode TUI plugin that adds a command to:
+OpenCode TUI plugin that runs configurable built-in command sequences.
 
-1. Copy the last assistant message (`messages.copy`)
-2. Open editor (`prompt.editor`)
+## What it does
 
-## Why this layout
+- reads `workflows.json`
+- registers each workflow as a TUI command
+- optionally assigns a trigger key (`trigger`)
+- executes listed built-in commands in order
 
-This directory is intentionally self-contained so it can be moved to a separate repository without changes.
+## Configuration
 
-- independent `package.json`
-- independent `tsconfig.json`
-- source code under `src/`
+Create `workflows.json` next to the plugin entry file.
 
-## Usage (local)
+```json
+{
+  "workflows": [
+    {
+      "title": "Copy last assistant message and open editor",
+      "value": "workflow.copy-last-and-open-editor",
+      "trigger": "ctrl+x y",
+      "commands": ["messages.copy", "prompt.editor"]
+    }
+  ]
+}
+```
 
-Place this directory wherever you manage plugins, then load it from `tui.json`:
+### Fields
+
+- `title`: shown in command palette
+- `value`: command ID (optional)
+- `description`: palette description (optional)
+- `category`: palette category (optional)
+- `trigger`: keybind string (optional)
+- `commands`: built-in command IDs to run in sequence
+
+## Usage
 
 ```json
 {
@@ -24,10 +44,4 @@ Place this directory wherever you manage plugins, then load it from `tui.json`:
 }
 ```
 
-## Triggering
-
-Open command palette and run:
-
-- `Copy last assistant message and open editor`
-
-If needed, you can add a custom keybind by creating a separate plugin-level key handler.
+Then run from command palette.

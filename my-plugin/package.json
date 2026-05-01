@@ -1,13 +1,14 @@
 {
-  "name": "opencode-plugin-copy-and-open-editor",
-  "version": "0.1.0",
-  "description": "OpenCode TUI plugin that copies the last assistant message and opens editor in one command",
+  "name": "opencode-workflow-plugin",
+  "version": "0.2.0",
+  "description": "OpenCode TUI plugin for configurable built-in command workflows",
   "type": "module",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "files": [
     "dist",
     "src",
+    "workflows.json",
     "README.md"
   ],
   "scripts": {
