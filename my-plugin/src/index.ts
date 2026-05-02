@@ -1,4 +1,5 @@
 import path from "node:path"
+import fs from "node:fs/promises"
 import { fileURLToPath } from "node:url"
 import type { TuiPlugin, TuiCommand } from "@opencode-ai/plugin/tui"
 
@@ -34,9 +35,16 @@ function runSequence(api: Parameters<TuiPlugin>[0], commands: string[]) {
   })
 }
 
+async function resolvePluginDirectory(target: string) {
+  const base = target.startsWith("file://") ? fileURLToPath(target) : target
+  const stat = await fs.stat(base).catch(() => undefined)
+  if (stat?.isDirectory()) return base
+  return path.dirname(base)
+}
+
 async function loadConfig(meta: Parameters<TuiPlugin>[2]) {
-  const base = meta.target.startsWith("file://") ? fileURLToPath(meta.target) : meta.target
-  const configPath = path.join(base, "keyflow.json")
+  const pluginDirectory = await resolvePluginDirectory(meta.target)
+  const configPath = path.join(pluginDirectory, "keyflow.json")
   const loaded = await Bun.file(configPath)
     .json()
     .catch(() => undefined)

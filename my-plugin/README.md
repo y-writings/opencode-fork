@@ -35,6 +35,11 @@ Create `keyflow.json` next to the plugin entry file.
 - `keybind`: trigger key string (optional)
 - `commands`: built-in command IDs to run in sequence
 
+
+## Config file discovery
+
+`keyflow.json` is resolved from the plugin directory, whether you load the plugin by directory path (for example `./my-plugin`) or by explicit entry file path (for example `./my-plugin/src/index.ts`).
+
 ## Usage
 
 ```json
