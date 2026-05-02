@@ -1,4 +1,5 @@
 import path from "node:path"
+import { fileURLToPath } from "node:url"
 import type { TuiPlugin, TuiCommand } from "@opencode-ai/plugin/tui"
 
 type KeyflowConfig = {
@@ -34,7 +35,8 @@ function runSequence(api: Parameters<TuiPlugin>[0], commands: string[]) {
 }
 
 async function loadConfig(meta: Parameters<TuiPlugin>[2]) {
-  const configPath = path.join(path.dirname(meta.target), "keyflow.json")
+  const base = meta.target.startsWith("file://") ? fileURLToPath(meta.target) : meta.target
+  const configPath = path.join(base, "keyflow.json")
   const loaded = await Bun.file(configPath)
     .json()
     .catch(() => undefined)
