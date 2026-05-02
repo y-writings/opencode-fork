@@ -1,25 +1,25 @@
-# opencode-workflow-plugin
+# opencode-keyflow
 
-OpenCode TUI plugin that runs configurable built-in command sequences.
+OpenCode TUI plugin that runs keybind-driven built-in command sequences.
 
 ## What it does
 
-- reads `workflows.json`
-- registers each workflow as a TUI command
-- optionally assigns a trigger key (`trigger`)
+- reads `keyflow.json`
+- registers each keyflow as a TUI command
+- assigns a trigger key (`keybind`)
 - executes listed built-in commands in order
 
 ## Configuration
 
-Create `workflows.json` next to the plugin entry file.
+Create `keyflow.json` next to the plugin entry file.
 
 ```json
 {
-  "workflows": [
+  "flows": [
     {
       "title": "Copy last assistant message and open editor",
-      "value": "workflow.copy-last-and-open-editor",
-      "trigger": "ctrl+x y",
+      "value": "keyflow.copy-last-and-open-editor",
+      "keybind": "ctrl+x y",
       "commands": ["messages.copy", "prompt.editor"]
     }
   ]
@@ -32,7 +32,7 @@ Create `workflows.json` next to the plugin entry file.
 - `value`: command ID (optional)
 - `description`: palette description (optional)
 - `category`: palette category (optional)
-- `trigger`: keybind string (optional)
+- `keybind`: trigger key string (optional)
 - `commands`: built-in command IDs to run in sequence
 
 ## Usage

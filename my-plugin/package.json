@@ -1,14 +1,14 @@
 {
-  "name": "opencode-workflow-plugin",
-  "version": "0.2.0",
-  "description": "OpenCode TUI plugin for configurable built-in command workflows",
+  "name": "opencode-keyflow",
+  "version": "0.3.0",
+  "description": "OpenCode TUI plugin for keybind-driven built-in command sequences",
   "type": "module",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "files": [
     "dist",
     "src",
-    "workflows.json",
+    "keyflow.json",
     "README.md"
   ],
   "scripts": {
