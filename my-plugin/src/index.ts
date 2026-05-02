@@ -35,16 +35,26 @@ function runSequence(api: Parameters<TuiPlugin>[0], commands: string[]) {
   })
 }
 
-async function resolvePluginDirectory(target: string) {
-  const base = target.startsWith("file://") ? fileURLToPath(target) : target
-  const stat = await fs.stat(base).catch(() => undefined)
-  if (stat?.isDirectory()) return base
-  return path.dirname(base)
+async function pathExists(file: string) {
+  return Boolean(await fs.stat(file).catch(() => undefined))
+}
+
+async function resolvePluginRoot(target: string) {
+  const resolved = target.startsWith("file://") ? fileURLToPath(target) : target
+  const stat = await fs.stat(resolved).catch(() => undefined)
+  const seed = stat?.isDirectory() ? resolved : path.dirname(resolved)
+  let current = path.resolve(seed)
+  while (true) {
+    if (await pathExists(path.join(current, "package.json"))) return current
+    const parent = path.dirname(current)
+    if (parent === current) return seed
+    current = parent
+  }
 }
 
 async function loadConfig(meta: Parameters<TuiPlugin>[2]) {
-  const pluginDirectory = await resolvePluginDirectory(meta.target)
-  const configPath = path.join(pluginDirectory, "keyflow.json")
+  const pluginRoot = await resolvePluginRoot(meta.target)
+  const configPath = path.join(pluginRoot, "keyflow.json")
   const loaded = await Bun.file(configPath)
     .json()
     .catch(() => undefined)

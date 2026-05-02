@@ -11,7 +11,7 @@ OpenCode TUI plugin that runs keybind-driven built-in command sequences.
 
 ## Configuration
 
-Create `keyflow.json` next to the plugin entry file.
+Create `keyflow.json` in the plugin root (the directory containing `package.json`).
 
 ```json
 {
@@ -38,7 +38,7 @@ Create `keyflow.json` next to the plugin entry file.
 
 ## Config file discovery
 
-`keyflow.json` is resolved from the plugin directory, whether you load the plugin by directory path (for example `./my-plugin`) or by explicit entry file path (for example `./my-plugin/src/index.ts`).
+`keyflow.json` is always resolved from the plugin root (where `package.json` is). This works for both directory specs (for example `./my-plugin`) and entry-file specs (for example `./my-plugin/src/index.ts`).
 
 ## Usage
 
