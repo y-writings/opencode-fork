@@ -1,0 +1,10 @@
+{
+  "flows": [
+    {
+      "title": "Copy last assistant message and open editor",
+      "value": "keyflow.copy-last-and-open-editor",
+      "keybind": "ctrl+x y",
+      "commands": ["messages.copy", "prompt.editor"]
+    }
+  ]
+}

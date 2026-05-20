@@ -1,0 +1,28 @@
+{
+  "name": "opencode-keyflow",
+  "version": "0.3.0",
+  "description": "OpenCode TUI plugin for keybind-driven built-in command sequences",
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "files": [
+    "dist",
+    "src",
+    "keyflow.json",
+    "README.md"
+  ],
+  "scripts": {
+    "build": "bun build ./src/index.ts --outdir ./dist --target bun",
+    "typecheck": "bunx tsc --noEmit"
+  },
+  "peerDependencies": {
+    "@opencode-ai/plugin": "*"
+  },
+  "devDependencies": {
+    "typescript": "^5.9.3"
+  },
+  "exports": {
+    ".": "./src/index.ts",
+    "./tui": "./src/index.ts"
+  }
+}
